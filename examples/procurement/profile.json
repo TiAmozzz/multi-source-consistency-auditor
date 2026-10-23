@@ -1,0 +1,105 @@
+{
+  "name": "采购资料一致性核验",
+  "entity": "采购项目",
+  "identifier": {
+    "field": "project_id",
+    "aliases": ["项目编号", "采购编号", "采购项目编号"],
+    "pattern": "(?:P|PRJ)-\\d{4}-\\d{3}"
+  },
+  "sources": [
+    {
+      "name": "采购台账",
+      "type": "table",
+      "paths": ["input/采购台账.xlsx"],
+      "expected": true
+    },
+    {
+      "name": "采购申请",
+      "type": "table",
+      "paths": ["input/采购申请.csv"],
+      "expected": true
+    },
+    {
+      "name": "合同文件",
+      "type": "document",
+      "paths": ["input/合同文件"],
+      "include": ["*.docx", "*.pdf"],
+      "expected": true
+    }
+  ],
+  "fields": {
+    "project_name": {
+      "label": "项目名称",
+      "aliases": ["项目名称", "采购项目", "采购项目名称"],
+      "type": "text"
+    },
+    "supplier": {
+      "label": "供应商",
+      "aliases": ["供应商", "供应商名称", "乙方"],
+      "type": "text"
+    },
+    "amount": {
+      "label": "金额",
+      "aliases": ["采购金额", "合同金额", "报价金额", "金额"],
+      "type": "amount"
+    },
+    "application_date": {
+      "label": "申请日期",
+      "aliases": ["申请日期", "申报日期"],
+      "type": "date"
+    },
+    "signed_date": {
+      "label": "签订日期",
+      "aliases": ["签订日期", "签署日期"],
+      "type": "date"
+    }
+  },
+  "tolerances": {
+    "amount": "0.01"
+  },
+  "auto_consistent_fields": true,
+  "coverage_severity": "warning",
+  "checks": [
+    {
+      "type": "consistent",
+      "field": "project_name",
+      "severity": "warning"
+    },
+    {
+      "type": "consistent",
+      "field": "supplier",
+      "severity": "error"
+    },
+    {
+      "type": "consistent",
+      "field": "amount",
+      "sources": ["采购台账", "采购申请", "合同文件"],
+      "severity": "error",
+      "tolerance": "0.01"
+    },
+    {
+      "type": "required",
+      "field": "project_name",
+      "sources": ["采购台账", "采购申请", "合同文件"],
+      "severity": "warning"
+    },
+    {
+      "type": "required",
+      "field": "supplier",
+      "sources": ["采购台账", "采购申请", "合同文件"],
+      "severity": "warning"
+    },
+    {
+      "type": "required",
+      "field": "amount",
+      "sources": ["采购台账", "采购申请", "合同文件"],
+      "severity": "error"
+    },
+    {
+      "type": "date_order",
+      "start": "application_date",
+      "end": "signed_date",
+      "severity": "warning"
+    }
+  ]
+}

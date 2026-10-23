@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "multi-source-consistency-auditor"
+version = "0.1.0"
+description = "Read-only, evidence-traceable consistency auditing across documents and spreadsheets."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Multi-Source Consistency Auditor contributors"}]
+dependencies = [
+  "openpyxl>=3.1,<4",
+  "python-docx>=1.1,<2",
+  "pypdf>=4.0,<7",
+  "python-dateutil>=2.9,<3",
+  "reportlab>=4.0,<5",
+]
+
+[project.scripts]
+multi-source-audit = "multi_source_consistency_auditor.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "multi-source-consistency-auditor/scripts"}
+
+[tool.setuptools.packages.find]
+where = ["multi-source-consistency-auditor/scripts"]
+include = ["multi_source_consistency_auditor*"]
+
+[tool.setuptools.package-data]
+multi_source_consistency_auditor = ["assets/*"]

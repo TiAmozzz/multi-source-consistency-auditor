@@ -1,0 +1,7 @@
+interface:
+  display_name: "多源资料一致性核验助手"
+  short_description: "只读核对多个表格和文档，输出带原文证据的差异报告"
+  brand_color: "#156F73"
+  default_prompt: "使用 $multi-source-consistency-auditor 核验这些文件与表格中的编号、字段和缺失记录。"
+policy:
+  allow_implicit_invocation: true

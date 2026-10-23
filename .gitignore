@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+build/
+dist/
+examples/procurement/output/
+audit-output/
+.pytest_cache/
+*.egg-info/
+docs/assets/report-screenshot-top.png
+multi-source-consistency-auditor/scripts/multi_source_consistency_auditor/assets/NotoSansSC-VF.ttf
