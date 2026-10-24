@@ -9,3 +9,4 @@ audit-output/
 *.egg-info/
 docs/assets/report-screenshot-top.png
 multi-source-consistency-auditor/scripts/multi_source_consistency_auditor/assets/NotoSansSC-VF.ttf
+user_data/

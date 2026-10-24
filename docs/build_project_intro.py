@@ -12,6 +12,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
 from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
     Image,
@@ -38,8 +39,17 @@ FONT = (
     / "assets"
     / "NotoSansSC-VF.ttf"
 )
+FONT_CANDIDATES = [
+    FONT,
+    Path(r"C:\Windows\Fonts\NotoSansSC-VF.ttf"),
+    Path(r"C:\Windows\Fonts\Deng.ttf"),
+]
 
-pdfmetrics.registerFont(TTFont("MSCA", str(FONT)))
+font_path = next((path for path in FONT_CANDIDATES if path.is_file()), None)
+if font_path:
+    pdfmetrics.registerFont(TTFont("MSCA", str(font_path)))
+else:
+    pdfmetrics.registerFont(UnicodeCIDFont("MSCA"))
 INK = colors.HexColor("#17212B")
 MUTED = colors.HexColor("#607080")
 TEAL = colors.HexColor("#156F73")
@@ -276,6 +286,7 @@ def build() -> None:
             [
                 ["功能", "输入与输出"],
                 ["多文件读取", "一次解析多份表格和多份文档；一个 Excel 工作簿的每个 Sheet 独立读取"],
+                ["交互式选择", "本地页面一次选择多份文件，自动推断字段并执行核验"],
                 ["字段核验", "比较名称、编号、金额、数量和日期；金额可设置容差"],
                 ["资料完整性", "发现某来源缺少实体、文件无编号、同一来源编号重复"],
                 ["日期逻辑", "检查申请晚于签署等时序矛盾"],
@@ -314,7 +325,7 @@ def build() -> None:
         table(
             [
                 ["测试项", "验证结果"],
-                ["自动化测试", "11 项测试全部通过"],
+                ["自动化测试", "13 项测试全部通过"],
                 ["正常输入", "Excel、CSV、Word、PDF 均成功解析并提取字段"],
                 ["多 Sheet", "同一工作簿两个 Sheet 均成功识别"],
                 ["非法配置", "返回明确配置错误，不执行半成品核验"],

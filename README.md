@@ -73,6 +73,18 @@ python multi-source-consistency-auditor/scripts/audit.py \
   --format docx
 ```
 
+## 选择自己的文件
+
+双击 `tools/file_picker.cmd`，浏览器会打开本地选择页面。一次选择多份表格和文档，填写共同编号字段并选择报告格式即可核验。
+
+也可以运行：
+
+```bash
+python tools/file_picker.py
+```
+
+选择页面只监听本机 `127.0.0.1`。所选文件会复制到已忽略提交的 `user_data/file-picker-uploads/`，报告写入 `user_data/file-picker-runs/`，原始文件不会被修改。详见 `tools/README.md`。
+
 ```bash
 python multi-source-consistency-auditor/scripts/audit.py \
   --profile examples/procurement/profile.json \
@@ -148,6 +160,7 @@ python -m unittest discover -s tests -v
 multi-source-consistency-auditor/
 ├── multi-source-consistency-auditor/  # Agent Skill
 ├── examples/procurement/              # 虚构采购样例与配置
+├── tools/                             # 本地多文件选择页面
 ├── tests/                             # 自动化测试
 ├── docs/                              # 测试记录与参赛说明
 ├── requirements.txt
