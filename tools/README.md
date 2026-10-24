@@ -6,7 +6,7 @@
 python tools/file_picker.py
 ```
 
-页面支持一次选择多份 CSV、TSV、XLSX、XLSM、JSON、DOCX、PDF、TXT、Markdown 或 HTML 文件，填写统一编号字段后自动推断常见字段并生成差异报告。
+页面支持分次选择文件。每次点击“选择文件”都会把新文件追加到已选列表，可逐个移除或清空，然后一次核验全部资料。支持 CSV、TSV、XLSX、XLSM、JSON、DOCX、PDF、TXT、Markdown 或 HTML 文件。
 
 输出保存在 `user_data/file-picker-runs/`，所选文件的本机副本保存在 `user_data/file-picker-uploads/`。这些目录已加入 `.gitignore`，不会提交到代码仓库。
 

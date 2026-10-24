@@ -86,7 +86,7 @@ input[type=text]{width:100%;padding:10px;border:1px solid #b8c7d1;border-radius:
 .options{display:flex;flex-wrap:wrap;gap:12px 22px;margin:12px 0}.options label{cursor:pointer}
 button{background:var(--teal);color:white;border:0;border-radius:8px;padding:12px 24px;font-size:16px;font-weight:700;cursor:pointer;margin-top:18px}
 button:disabled{opacity:.55;cursor:wait}.note{background:#f4f8f9;border-left:4px solid var(--teal);padding:12px 15px;color:#526575;font-size:13px}
-.files{margin-top:14px;color:var(--muted);font-size:13px}.result{margin-top:22px;padding:18px;border-radius:10px;background:#f5f9f9;border:1px solid var(--line)}
+.files{margin-top:14px;color:var(--muted);font-size:13px}.file-row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;border:1px solid var(--line);border-radius:7px;padding:7px 10px;margin-top:7px;color:var(--ink)}.file-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.remove{border:1px solid #d7a9a4;background:#fff5f3;color:#9b2920;padding:4px 9px;font-size:12px;margin:0}.clear{border:0;background:transparent;color:var(--teal);padding:5px;margin-top:8px;font-size:13px}.result{margin-top:22px;padding:18px;border-radius:10px;background:#f5f9f9;border:1px solid var(--line)}
 .links a{display:inline-block;margin:7px 12px 0 0;color:var(--teal);font-weight:700}.error{background:#fff0ee;border-color:#f1b9b3;color:#9b2920}
 @media(max-width:650px){.grid{grid-template-columns:1fr}main{margin-top:20px}}
 </style>
@@ -97,7 +97,9 @@ button:disabled{opacity:.55;cursor:wait}.note{background:#f4f8f9;border-left:4px
 <div class="zone">
 <input id="files" type="file" multiple accept=".csv,.tsv,.xlsx,.xlsm,.json,.docx,.pdf,.txt,.md,.markdown,.html,.htm">
 <label class="pick" for="files">选择文件</label>
+<div class="files">可以多次点击“选择文件”，每次选择都会追加到下方列表。</div>
 <div id="file-list" class="files">尚未选择文件</div>
+<button id="clear-files" class="clear" type="button" hidden>清空全部已选文件</button>
 </div>
 <div class="grid">
 <div class="field"><label for="id-field">统一编号字段</label><input id="id-field" type="text" value="编号" placeholder="例如：合同编号、项目编号、学号"></div>
@@ -115,11 +117,33 @@ button:disabled{opacity:.55;cursor:wait}.note{background:#f4f8f9;border-left:4px
 <div id="result" class="result" hidden></div>
 </div></main>
 <script>
-const input=document.getElementById("files"),list=document.getElementById("file-list"),button=document.getElementById("run"),result=document.getElementById("result");
-input.addEventListener("change",()=>{const f=[...input.files];list.textContent=f.length?f.map(x=>x.name).join("  ·  "):"尚未选择文件";});
+const input=document.getElementById("files"),list=document.getElementById("file-list"),button=document.getElementById("run"),result=document.getElementById("result"),clear=document.getElementById("clear-files");
+let selectedFiles=[];
+function fileKey(file){return `${file.name}:${file.size}:${file.lastModified}`;}
+function renderFiles(){
+  list.innerHTML="";
+  if(!selectedFiles.length){list.textContent="尚未选择文件";clear.hidden=true;return;}
+  clear.hidden=false;
+  selectedFiles.forEach((file,index)=>{
+    const row=document.createElement("div");row.className="file-row";
+    const name=document.createElement("span");name.textContent=`${index+1}. ${file.name}`;
+    const remove=document.createElement("button");remove.type="button";remove.className="remove";remove.dataset.index=String(index);remove.textContent="移除";
+    row.append(name,remove);list.append(row);
+  });
+}
+input.addEventListener("change",()=>{
+  const existing=new Set(selectedFiles.map(fileKey));
+  for(const file of [...input.files]){const key=fileKey(file);if(!existing.has(key)){selectedFiles.push(file);existing.add(key);}}
+  input.value="";renderFiles();
+});
+list.addEventListener("click",(event)=>{
+  const remove=event.target.closest("button[data-index]");if(!remove)return;
+  selectedFiles.splice(Number(remove.dataset.index),1);renderFiles();
+});
+clear.addEventListener("click",()=>{selectedFiles=[];renderFiles();});
 function readFile(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve({name:file.name,data:reader.result});reader.onerror=reject;reader.readAsDataURL(file);});}
 button.addEventListener("click",async()=>{
-  const files=[...input.files];if(!files.length){alert("请先选择文件");return;}
+  const files=[...selectedFiles];if(!files.length){alert("请先选择文件");return;}
   const formats=[...document.querySelectorAll('input[name="format"]:checked')].map(x=>x.value);
   if(!formats.length){alert("请至少选择一种输出格式");return;}
   button.disabled=true;button.textContent="正在核验…";result.hidden=true;

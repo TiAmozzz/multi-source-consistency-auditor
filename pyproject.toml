@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "multi-source-consistency-auditor"
-version = "0.2.0"
+version = "0.2.1"
 description = "Read-only, evidence-traceable consistency auditing across documents and spreadsheets."
 readme = "README.md"
 requires-python = ">=3.10"

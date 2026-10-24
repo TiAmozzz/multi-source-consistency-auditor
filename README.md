@@ -75,7 +75,7 @@ python multi-source-consistency-auditor/scripts/audit.py \
 
 ## 选择自己的文件
 
-双击 `tools/file_picker.cmd`，浏览器会打开本地选择页面。一次选择多份表格和文档，填写共同编号字段并选择报告格式即可核验。
+双击 `tools/file_picker.cmd`，浏览器会打开本地选择页面。可以多次选择并把文件追加到同一列表，也可逐个移除；填写共同编号字段并选择报告格式后即可一次核验。
 
 也可以运行：
 
