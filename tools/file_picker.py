@@ -413,7 +413,11 @@ def main() -> None:
     print(f"文件选择核验工具已启动：{url}")
     print("使用期间请不要关闭本窗口；按 Ctrl+C 可以停止。")
     if os.environ.get("MSCA_NO_BROWSER") != "1":
-        webbrowser.open(url)
+        try:
+            if not webbrowser.open(url):
+                print(f"浏览器未能自动打开，请手动访问：{url}")
+        except Exception as exc:
+            print(f"浏览器未能自动打开，请手动访问：{url}（{exc}）")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
